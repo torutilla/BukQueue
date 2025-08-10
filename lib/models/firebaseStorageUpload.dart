@@ -1,0 +1,3 @@
+class FirebaseStorageUpload {
+  void uploadImageFirebase() {}
+}

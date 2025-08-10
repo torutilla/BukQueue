@@ -1,0 +1,3 @@
+class Gcash {
+  void call() {}
+}
