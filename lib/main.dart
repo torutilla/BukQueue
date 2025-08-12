@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -16,6 +16,9 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await FirebaseAppCheck.instance.activate(
+    androidProvider: AndroidProvider.debug,
+  );
   await dotenv.load(fileName: ".env");
   final sql = SqliteOperations();
   await sql.initDatabase();
@@ -29,10 +32,9 @@ Future<void> main() async {
   //     .resolvePlatformSpecificImplementation<
   //         AndroidFlutterLocalNotificationsPlugin>()!
   //     .requestNotificationsPermission();
-  await FirebaseAppCheck.instance.activate(
-    androidProvider: AndroidProvider.debug,
-  );
-
+  //
+  // print('Initial App Check token: ${tokenResult}');
+  // FirebaseAuth.instance.signOut();
   runApp(MyRouter());
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   // FirebaseAppCheck.instance.setTokenAutoRefreshEnabled(true);

@@ -36,7 +36,7 @@ class UserProvider extends ChangeNotifier {
     if (isDriver) {
       userInfo['Verification Status'] = 'Pending';
     }
-    UserSharedPreferences().addToCache({'UID': uid});
+    await UserSharedPreferences().addToCache({'UID': uid});
     try {
       if (userInfo.isNotEmpty) {
         if (vehicleInfo.isNotEmpty && isDriver) {
@@ -44,20 +44,24 @@ class UserProvider extends ChangeNotifier {
           final links = await uploadLicenseAndProfile(uid);
           userInfo.addAll(links);
         }
+        await FirebaseFirestore.instance
+            .collection('Users')
+            .doc(uid)
+            .set(userInfo);
+        await cachingDoc.storeId(uid);
         // final userExists = await checkIfUserAlreadyExists(userInfo['UID']);
         // if (userExists.isNotEmpty) {
         //   firestoreOperations.updateDatabaseValues('Users', userExists[0].id, {
         //     'Role': FieldValue.arrayUnion([userInfo['Role']])
         //   });
         // } else {
-        await firestoreOperations.addDataToDatabase(
-          'Users',
-          userInfo,
-          onCompleteAdd: (id) {
-            userID = id;
-          },
-        );
-        await cachingDoc.storeId(userID);
+        // await firestoreOperations.addDataToDatabase(
+        //   'Users',
+        //   userInfo,
+        //   onCompleteAdd: (id) {
+        //     userID = id;
+        //   },
+        // );
         // if (isDriver) {
         //   firestoreOperations.addDataToDatabase(
         //       'Users',
@@ -105,9 +109,9 @@ class UserProvider extends ChangeNotifier {
     licenseNumber = number;
     restrictionCodes = codes.join(", ");
     licenseType = type;
-    var convertToDate = DateTime.tryParse(expDate);
+    final convertToDate = DateTime.tryParse(expDate);
     expiryDate = convertToDate;
-
+    // print(expiryDate);
     notifyListeners();
   }
 
@@ -153,7 +157,7 @@ class UserProvider extends ChangeNotifier {
     //       subCollectionPath: 'Vehicle Info',
     //       vehicleInfo);
     // }
-    vehicleInfo['License Expiry'] = expiryDate.toString();
+    // vehicleInfo['License Expiry'] = expiryDate.toString();
 
     notifyListeners();
   }

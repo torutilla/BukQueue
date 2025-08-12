@@ -858,7 +858,7 @@ class _VehicleRegistrationState extends State<VehicleRegistration> {
           contactNumber: userProvider.userInfo['Contact Number'],
           isRider: true,
           route: ScreenRoutes.driverMain,
-          vehicleData: userProvider.vehicleInfo,
+          // vehicleData: userProvider.vehicleInfo,
         ));
     return;
   }

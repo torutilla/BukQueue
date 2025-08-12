@@ -69,3 +69,4 @@ devtools_options.yaml
 android/gradle.properties
 .env
 lib/firebase_options.dart
+debugToken.env

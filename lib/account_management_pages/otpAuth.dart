@@ -246,7 +246,8 @@ class OtpPageState extends State<OtpPage> {
                                 if (debounce?.isActive ?? false) {
                                   debounce?.cancel();
                                 }
-                                debounce = Timer(Duration(seconds: 1), () {
+                                debounce =
+                                    Timer(Duration(seconds: 1), () async {
                                   if (otpController.text.isNotEmpty) {
                                     showDialog(
                                         barrierDismissible: false,
@@ -260,7 +261,7 @@ class OtpPageState extends State<OtpPage> {
                                             ),
                                           );
                                         });
-                                    verifyOTP(otpController.text);
+                                    await verifyOTP(otpController.text);
                                   }
                                 });
                               },
@@ -412,7 +413,7 @@ class OtpPageState extends State<OtpPage> {
     } catch (e) {
       print(e);
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Please check your internet connection and try again.'),
+        content: Text('Something went wrong. Please try again later.'),
       ));
       Navigator.of(context).pop();
     }
@@ -441,11 +442,11 @@ class OtpPageState extends State<OtpPage> {
         phoneNumber: contactNumber,
         timeout: const Duration(minutes: 2),
         verificationCompleted: (credentials) async {
-          final cred = await firebaseAuth.signInWithCredential(credentials);
-          final uid = cred.user?.uid;
-          if (uid != null && widget.userInfo == null) {
-            await addUser(uid);
-          }
+          // final cred = await firebaseAuth.signInWithCredential(credentials);
+          // final uid = cred.user?.uid;
+          // if (uid != null && widget.userInfo == null) {
+          //   await addUser(uid);
+          // }
           // _checkRole();
         },
         verificationFailed: (authException) {
@@ -504,29 +505,29 @@ class OtpPageState extends State<OtpPage> {
   Future<void> addUser(String uid) async {
     final userProvider = getUserProvider();
     userUID = uid;
-    if (widget.vehicleData != null) {
-      userProvider.storeLicenseInfoToCache(
-        widget.vehicleData!['License Number'],
-        widget.vehicleData!['Restrictions'],
-        widget.vehicleData!['License Type'],
-        widget.vehicleData!['License Expiry'],
-      );
-      // userProvider.addLicenseInfo(
-      //     widget.vehicleData!['License Number'],
-      //     widget.vehicleData!['Restrictions'],
-      //     widget.vehicleData!['License Type'],
-      //     widget.vehicleData!['License Expiry']);
-      userProvider.updateVehicleInfo(
-          widget.vehicleData!['Operator Name'],
-          widget.vehicleData!['OR_CR Number'],
-          widget.vehicleData!['OR Expiry Date'],
-          widget.vehicleData!['Body Number'],
-          widget.vehicleData!["MTOP Number"],
-          widget.vehicleData!['Plate Number'],
-          widget.vehicleData!['Vehicle Type'],
-          widget.vehicleData!['Chassis Number'],
-          widget.vehicleData!['Zone Number']);
-    }
+    // if (widget.vehicleData != null) {
+    //   // userProvider.addLicenseInfo(
+    //   //     widget.vehicleData!['License Number'],
+    //   //     widget.vehicleData!['Restrictions'],
+    //   //     widget.vehicleData!['License Type'],
+    //   //     widget.vehicleData!['License Expiry']);
+    //   userProvider.updateVehicleInfo(
+    //       widget.vehicleData!['Operator Name'],
+    //       widget.vehicleData!['OR_CR Number'],
+    //       widget.vehicleData!['OR Expiry Date'],
+    //       widget.vehicleData!['Body Number'],
+    //       widget.vehicleData!["MTOP Number"],
+    //       widget.vehicleData!['Plate Number'],
+    //       widget.vehicleData!['Vehicle Type'],
+    //       widget.vehicleData!['Chassis Number'],
+    //       widget.vehicleData!['Zone Number']);
+    //   userProvider.storeLicenseInfoToCache(
+    //     widget.vehicleData!['License Number'],
+    //     widget.vehicleData!['Restrictions'],
+    //     widget.vehicleData!['License Type'],
+    //     widget.vehicleData!['License Expiry'],
+    //   );
+    // }
     await userProvider.addUserToDatabase(uid, isDriver: widget.isRider);
   }
 

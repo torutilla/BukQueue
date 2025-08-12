@@ -5,13 +5,17 @@ class FirestoreOperations {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   StreamSubscription? streamListener;
   Future<void> deleteCurrentAccount(String uid) async {
-    final collectionRef = FirebaseFirestore.instance.collection('Users');
-    final querySnapshot =
-        await collectionRef.where("UID", isEqualTo: uid).limit(1).get();
+    try {
+      final collectionRef = FirebaseFirestore.instance.collection('Users');
+      final querySnapshot =
+          await collectionRef.where("UID", isEqualTo: uid).limit(1).get();
 
-    if (querySnapshot.docs.isNotEmpty) {
-      final firstID = querySnapshot.docs.first.id;
-      await collectionRef.doc(firstID).delete();
+      if (querySnapshot.docs.isNotEmpty) {
+        final firstID = querySnapshot.docs.first.id;
+        await collectionRef.doc(firstID).delete();
+      }
+    } catch (e) {
+      print('Error deleting account: $e');
     }
   }
 

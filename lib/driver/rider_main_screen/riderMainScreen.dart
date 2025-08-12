@@ -26,6 +26,9 @@ import 'package:flutter_try_thesis/constants/utility_widgets/overlayEntryCard.da
 import 'package:flutter_try_thesis/constants/utility_widgets/utilButton.dart';
 import 'package:flutter_try_thesis/constants/utility_widgets/utilDrawer.dart';
 import 'package:flutter_try_thesis/driver/account_management/rider_page/signupRider.dart';
+import 'package:flutter_try_thesis/driver/rider_main_screen/bookingDraggable.dart';
+import 'package:flutter_try_thesis/driver/rider_main_screen/deniedVerificationScreen.dart';
+import 'package:flutter_try_thesis/driver/rider_main_screen/pendingVerificationScreen.dart';
 import 'package:flutter_try_thesis/map/mainMap.dart';
 import 'package:flutter_try_thesis/driver/rider_main_screen/ongoingBookings.dart';
 import 'package:flutter_try_thesis/driver/rider_main_screen/riderBookingHistory.dart';
@@ -224,51 +227,7 @@ class RiderMapState extends State<RiderScreenMap>
             //
             // }
             if (snapshot.hasData && snapshot.data == 'Denied') {
-              return Scaffold(
-                body: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const Icon(
-                        Icons.error_rounded,
-                        color: errorColor,
-                        size: 80,
-                      ),
-                      const TextTitle(
-                        text: 'Verification Denied',
-                        textColor: errorColor,
-                      ),
-                      const Text('Your verification has been denied'),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 32.0),
-                        child: PrimaryButton(
-                          backgroundColor: errorColor,
-                          onPressed: () async {
-                            showDialog(
-                              context: context,
-                              barrierDismissible: false,
-                              builder: (context) {
-                                return const Center(
-                                    child: CircularProgressIndicator());
-                              },
-                            );
-
-                            await firestoreOperations
-                                .deleteCurrentAccount(currentUID!);
-
-                            if (context.mounted) Navigator.of(context).pop();
-
-                            MyRouter.navigateAndRemoveAllStackBehind(
-                                context, const DriverSignUpForm());
-                          },
-                          buttonText: 'Retry Verification',
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              );
+              return DeniedVerificationScreen(currentUID: currentUID);
             }
 
             if (snapshot.hasData && snapshot.data == 'Verified') {
@@ -511,43 +470,30 @@ class RiderMapState extends State<RiderScreenMap>
                             ),
                           ],
                         ),
-                      showBookingDraggableSheet(context),
+                      BookingDraggable(
+                          bookingDraggableController:
+                              bookingDraggableController,
+                          currentPhotoLink: currentPhotoLink,
+                          currentPassenger: currentPassenger,
+                          currentNumber: currentNumber,
+                          currentPickupLocation: currentPickupLocation,
+                          currentDropoffLocation: currentDropoffLocation,
+                          currentDocId: currentDocId,
+                          onCancelled: () {
+                            _resetValues('Cancelled', resetOnlineStatus: true);
+                            _addToBookingHistory(context);
+                          },
+                          onCompleted: () {
+                            _resetValues('Completed', resetOnlineStatus: true);
+                          }),
+                      // showBookingDraggableSheet(context),
                       _initializeSheet(context),
                       queueDraggableSheet(context),
                     ],
                   ));
             }
             if (snapshot.hasData && snapshot.data == 'Pending') {
-              return Scaffold(
-                body: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const Icon(
-                        Icons.hourglass_bottom_rounded,
-                        color: primaryColor,
-                        size: 80,
-                      ),
-                      const TextTitle(
-                        text: 'Verification Ongoing',
-                        textColor: primaryColor,
-                      ),
-                      const Text('Your verification is under review'),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 32.0),
-                        child: PrimaryButton(
-                          onPressed: () {
-                            MyRouter.navigateAndRemoveAllStackBehind(
-                                context, const LoginForm());
-                          },
-                          buttonText: 'Back to login',
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              );
+              return const PendingVerificationScreen();
             }
             return const LoadingScreen();
           });
@@ -2069,7 +2015,7 @@ class RiderMapState extends State<RiderScreenMap>
     BookingProvider provider =
         Provider.of<BookingProvider>(context, listen: false);
 
-    currentUID = (await sharedPreferences.readCacheString("UID"))!;
+    currentUID = await sharedPreferences.readCacheString("UID") ?? '';
     setState(() {});
     provider.declinedBookingIds =
         await sharedPreferences.readCacheStringList('Declined Bookings') ?? [];
@@ -2084,8 +2030,8 @@ class RiderMapState extends State<RiderScreenMap>
       "Vehicle Type": await sharedPreferences.readCacheString('Vehicle Type'),
     };
     provider.updateBookingUserInfo(user);
-    if (currentUID != null) {
-      final path = await getPhoto.getPhotoLink(currentUID!);
+    if (currentUID.isNotEmpty) {
+      final path = await getPhoto.getPhotoLink(currentUID);
       // print(path);
       if (path.isNotEmpty) {
         photo = CachedNetworkImageProvider(path);

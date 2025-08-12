@@ -1,3 +1,4 @@
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -29,6 +30,8 @@ import '../models/navigatorKey.dart';
 import '../models/providers/adminProviders.dart';
 
 class MyRouter extends StatelessWidget {
+  bool isCheckingToken = false;
+
   MyRouter({super.key});
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   UserSharedPreferences sharedPreferences = UserSharedPreferences();
@@ -224,6 +227,15 @@ class MyRouter extends StatelessWidget {
   }
 
   Future<String> determineUserSession() async {
+    if (isCheckingToken == false) {
+      try {
+        isCheckingToken = true;
+        final tokenResult = await FirebaseAppCheck.instance.getToken();
+        print('Initial App Check token: ${tokenResult}');
+      } catch (e) {
+        print('Error getting token: $e');
+      }
+    }
     try {
       final user = firebaseAuth.currentUser;
       await user?.getIdToken(true);
