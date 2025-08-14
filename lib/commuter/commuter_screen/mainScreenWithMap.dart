@@ -609,6 +609,12 @@ class MapState extends State<MainScreenWithMap>
       "Contact Number": provider.bookingUserInfo['Contact Number'],
     };
     try {
+      FirebaseFirestore.instance
+          .collection('Booking_Details')
+          .add(bookingDetails)
+          .then((doc) {
+        _documentID = doc.id;
+      });
       firestoreOperations.addDataToDatabase(
         'Booking_Details',
         bookingDetails,

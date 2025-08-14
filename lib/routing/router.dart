@@ -17,6 +17,7 @@ import 'package:flutter_try_thesis/models/cache_manager/sharedPreferences/userSh
 import 'package:flutter_try_thesis/models/otpProvider.dart';
 import 'package:flutter_try_thesis/models/providers/bookingProvider.dart';
 import 'package:flutter_try_thesis/models/providers/historyProvider.dart';
+import 'package:flutter_try_thesis/models/providers/suggestionsProvider.dart';
 import 'package:flutter_try_thesis/models/providers/userProvider.dart';
 
 import 'package:flutter_try_thesis/startup.dart';

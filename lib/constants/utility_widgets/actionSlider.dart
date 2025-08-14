@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:action_slider/action_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -25,18 +27,22 @@ class CustomActionSlider extends StatelessWidget {
       loadingIcon: const CircularProgressIndicator(
         color: softWhite,
       ),
-      failureIcon: Icon(Icons.close),
+      failureIcon: const Icon(Icons.close),
       successIcon: const Icon(Icons.check),
       width: (ScreenUtil.parentWidth(context) * 0.90) - 40,
       height: 60,
-      action: (controller) async {
+      action: (controller) {
         controller.loading();
         whileLoading!(controller);
-        await Future.delayed(const Duration(seconds: 6));
-        await Future.delayed(const Duration(milliseconds: 500), () async {
+        Timer(const Duration(seconds: 2, milliseconds: 500), () {
           callBack(controller);
-          controller.success();
         });
+        controller.success();
+        // await Future.delayed(const Duration(seconds: 6));
+        // await Future.delayed(const Duration(milliseconds: 500), () async {
+        //   callBack(controller);
+        //   controller.success();
+        // });
       },
       child: Text(sliderText,
           style: Theme.of(context)
@@ -44,6 +50,5 @@ class CustomActionSlider extends StatelessWidget {
               .bodySmall!
               .copyWith(fontWeight: FontWeight.w500)),
     );
-    ;
   }
 }

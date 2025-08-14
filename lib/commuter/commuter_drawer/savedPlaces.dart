@@ -4,7 +4,7 @@ import 'package:flutter_try_thesis/commuter/booking_management/suggestionsCacheH
 import 'package:flutter_try_thesis/constants/constants.dart';
 import 'package:flutter_try_thesis/constants/screenSizes.dart';
 import 'package:flutter_try_thesis/models/cache_manager/sqlite_operations/sqliteOperations.dart';
-import 'package:flutter_try_thesis/models/providers/bookingProvider.dart';
+import 'package:flutter_try_thesis/models/providers/suggestionsProvider.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 

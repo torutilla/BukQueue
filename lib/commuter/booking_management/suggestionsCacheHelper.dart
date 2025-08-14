@@ -1,5 +1,5 @@
 import 'package:flutter_try_thesis/models/api_json_management/googleMapApis.dart';
-import 'package:flutter_try_thesis/models/providers/bookingProvider.dart';
+import 'package:flutter_try_thesis/models/providers/suggestionsProvider.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class SuggestionsHelper {

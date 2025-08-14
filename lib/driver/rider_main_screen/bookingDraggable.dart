@@ -7,6 +7,7 @@ import 'package:flutter_try_thesis/constants/screenSizes.dart';
 import 'package:flutter_try_thesis/constants/titleText.dart';
 import 'package:flutter_try_thesis/constants/utility_widgets/alert.dart';
 import 'package:flutter_try_thesis/constants/utility_widgets/utilButton.dart';
+import 'package:flutter_try_thesis/models/firestore_operations/booking_models/bookingTemplate.dart';
 import 'package:flutter_try_thesis/models/providers/bookingProvider.dart';
 import 'package:provider/provider.dart';
 
@@ -18,8 +19,9 @@ class BookingDraggable extends StatelessWidget {
   final String currentPickupLocation;
   final String currentDropoffLocation;
   final String currentDocId;
-  final Function onCancelled;
-  final Function onCompleted;
+  final Function onBookingCancelled;
+  final Function onBookingCompleted;
+  final DriverBooking booking;
   const BookingDraggable(
       {super.key,
       required this.bookingDraggableController,
@@ -29,8 +31,9 @@ class BookingDraggable extends StatelessWidget {
       required this.currentPickupLocation,
       required this.currentDropoffLocation,
       required this.currentDocId,
-      required this.onCancelled,
-      required this.onCompleted});
+      required this.onBookingCancelled,
+      required this.onBookingCompleted,
+      required this.booking});
 
   @override
   Widget build(BuildContext context) {
@@ -328,7 +331,7 @@ class BookingDraggable extends StatelessWidget {
       },
       updateOngoingBookingStatus: true,
     );
-    onCancelled();
+    onBookingCancelled();
   }
 
   void completeBooking(BuildContext context, BookingProvider provider) {
@@ -341,6 +344,6 @@ class BookingDraggable extends StatelessWidget {
       },
       updateOngoingBookingStatus: true,
     );
-    onCompleted();
+    onBookingCompleted();
   }
 }
