@@ -42,3 +42,9 @@
   <p>
     <img src="assets/screens/driver_mainpage.jpg" alt="Driver Map" width="300"/>
   </p>
+
+- **Driver Queue**
+  - Automatically organizes the queue based on specific Barangay "Toda" zones for efficient local dispatching.
+  <p>
+    <img src="assets/screens/Screenshot_20260407_105053.jpg" alt="Driver Queue" width="300"/>
+  </p>
